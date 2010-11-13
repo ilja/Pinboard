@@ -1,0 +1,39 @@
+{
+	"name": "Pinboard",
+	"version": "0.2.3.1",
+	"description": "Browse your Pinboard bookmarks. A felicious fork.",
+	"background_page": "background.html",
+	"options_page": "options.html",
+	"browser_action": {
+		"default_icon": "images/icon_19.png",
+		"popup": "popup.html"
+	},
+	"icons": {
+		"16": "images/icon_16.png",
+		"32": "images/icon_32.png",
+		"48": "images/icon_48.png",
+		"64": "images/icon_64.png"
+	},
+	"content_scripts": [
+		{
+			"matches": ["http://*/*", "https://*/*"],
+			"js": ["js/utils.js", "js/shortcuts.js"],
+			"run_at": "document_start"
+		},
+		{
+			"matches": ["http://pinboard.in/add*", "https://pinboard.in/add*"],
+			"js": ["js/close.js"],
+			"run_at": "document_start"
+		},
+		{
+			"matches": ["https://api.pinboard.in/oauth/v2/request_auth"],
+			"js": ["js/verify.js"],
+			"run_at": "document_start"
+		}
+	],
+	"permissions": [
+		"http://api.pinboard.in/*", 
+		"https://api.pinboard.in/*", 
+		"tabs"
+	]
+}

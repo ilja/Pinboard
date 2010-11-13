@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de" lang="de">
+	<head>
+		<link rel="stylesheet" type="text/css" href="options.css"/>
+		<script type="text/javascript" src="js/mootools-1.2.4.js"></script>
+		<script type="text/javascript" src="js/options.js"></script>
+		<title>Pinboard - Options</title>
+	</head>
+	<body>
+		<h1>Pinboard</h1>
+		<h2>Options</h2>
+		
+		<form>
+			<div class="fieldset" id="user">
+				<h3>Your Pinboard Account</h3>
+								
+				<div id="delicious_form">
+					<label>Username</label>
+					<input type="text" name="username" id="username">
+					
+					<label>Password</label>
+					<input type="password" name="password" id="password">
+				</div>
+				
+			</div>
+			
+			<div class="fieldset" id="synch">
+				<h3>Syncing</h3>
+				<div class="row">
+					<input type="checkbox" name="autosynch" id="autosynch" /> <label for="autosynch">Enable Automatic Syncing</label>
+				</div>
+				<div class="row">
+					<a href="#" id="synchnow">Sync Bookmarks Now</a>
+					<p id="syncherror">
+						An error occurred while syncing
+					</p>
+				</div>
+				<hr />
+				<h3>Keyboard Shortcuts</h3>
+				<div class="row">
+					Bookmark Page
+					<input id="shortcutBookmark" type="button" class="shortcut" value="set" />
+				</div>
+				<div class="row">
+					Browse Bookmarks
+					<input id="shortcutPopup" type="button" class="shortcut" value="set" />
+				</div>
+			</div>
+		</form>
+		
+		<div class="notes">			
+			<h3>License</h3>
+			<p>
+				Pinboard is free software: you can redistribute it and/or modify
+				it under the terms of the GNU General Public License as published by
+				the Free Software Foundation, either version 3 of the License, or
+				(at your option) any later version.
+			<p>
+			<p>
+				Pinboard is distributed in the hope that it will be useful,
+				but WITHOUT ANY WARRANTY; without even the implied warranty of
+				MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+				<a href="http://www.gnu.org/licenses/">GNU General Public License</a> for more details.
+			</p>
+			
+			<h3>Credits</h3>
+			<p>
+				Pinboard is powered by the <a href="http://www.mootools.net">mootools</a> javascript framework.<br />
+				Bookmark, edit and checkmark icons by <a href="http://www.gentleface.com">gentleface</a>.
+				Pinboard icon by <a href="http://www.jacobbuck.co.nz">Jacob Buck</a>
+			</p>
+			
+			<h3>Changelog</h3>
+			<h4>0.2.3.1</h4>
+			<p>
+				Initial release. Based off felicious 0.2.3.
+			</p>
+			
+			<p>
+				Google Code repository at <a href="http://code.google.com/p/pinboard-chrome">http://code.google.com/p/pinboard-chrome</a>
+			</p>
+		</div>
+	</body>
+</html>
