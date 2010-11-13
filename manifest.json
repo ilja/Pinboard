@@ -1,6 +1,6 @@
 {
 	"name": "Pinboard",
-	"version": "0.2.3.1",
+	"version": "0.2.3.2",
 	"description": "Browse your Pinboard bookmarks. A felicious fork.",
 	"background_page": "background.html",
 	"options_page": "options.html",
@@ -23,11 +23,6 @@
 		{
 			"matches": ["http://pinboard.in/add*", "https://pinboard.in/add*"],
 			"js": ["js/close.js"],
-			"run_at": "document_start"
-		},
-		{
-			"matches": ["https://api.pinboard.in/oauth/v2/request_auth"],
-			"js": ["js/verify.js"],
 			"run_at": "document_start"
 		}
 	],

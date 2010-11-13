@@ -96,16 +96,6 @@ span.splitter span{
 	font-weight: bold;
 }
 
-/*__Yahoo Form__*/
-#yahoo_form .logged_in,
-#yahoo_form.logged_in .logged_out{
-	display: none;
-}
-#yahoo_form .logged_out,
-#yahoo_form.logged_in .logged_in{
-	display: block;
-}
-
 /*__Synch Button__*/
 a.working{
 	background: url('images/spinner.gif') no-repeat right center;
@@ -143,15 +133,15 @@ div.notes{
 	padding: 6px 20px 0 20px;
 	border-left: 1px solid #cccccc;
 }
-.notes h4{
+.notes dt{
 	font-size: 12px;
 	font-weight: bold;
-	display: inline;
 	float: left;
 	margin: 0;
-	padding: 0 20px 0 0;
 }
-
+.notes dd {
+	margin: 0 0 1em 55px;
+}
 
 /*__Jacob's Additions__*/
 #delicious_form {

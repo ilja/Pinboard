@@ -17,7 +17,7 @@ var Delicious = new Class({
 	},
 	
 	isLoggedIn: function(){
-			return this.user.isLoggedIn();
+		return this.user.isLoggedIn();
 	},
 	
 	getURL: function(url, parameters){
@@ -59,7 +59,11 @@ var Delicious = new Class({
 			method: 'get',
 			url: this.getURL('posts/update'),
 			onSuccess: function(responseText, responseXML){
-				var time = responseXML.getElementsByTagName('update')[0].getAttribute('time');
+				if (responseXML.getElementsByTagName('update')[0].getAttribute('time')) {
+					var time = responseXML.getElementsByTagName('update')[0].getAttribute('time');
+				} else {
+					var time = null;
+				}
 				if(time > (localStorage['lastUpdate'] || '')){
 					self.load();
 				}else{
@@ -68,6 +72,7 @@ var Delicious = new Class({
 					chrome.extension.sendRequest({'type': 'noupdate'});
 					self.onComplete();
 				}
+				
 			},
 			onFailure: function(){
 				console.log('posts/update failed');
@@ -168,53 +173,35 @@ var DeliciousUser = new Class({
 	}
 });
 
-var YahooUser = new Class({
-	initialize: function(oauthHelper){
-		this.type = 'yahoo';
-		this.oauthHelper = oauthHelper;
-		this.sessionHandle = this.oauthHelper.sessionHandle;
-	},
-	
-	getURL: function(url, parameters){
-		return oauthHelper.sign('http://api.pinboard.in/v2/' + url, parameters);
-	},
-	
-	isLoggedIn: function(){
-		return this.oauthHelper.isLoggedIn();
-	},
-	
-	compare: function(user){
-		return this.type == user.type && this.sessionHandle == user.sessionHandle;
-	}
-});
-
 function getUser(){
-	if(localStorage.loginMethod == 'yahoo'){
-		return new YahooUser(oauthHelper);
-	}else{
-		return new DeliciousUser(localStorage.username, localStorage.password);
-	}
+	return new DeliciousUser(localStorage.username, localStorage.password);
 }
 
-function bookmarkURL(url, title, options){
-	var url;
-	if(title){
-		url = 'http://pinboard.in/add?url=' + encodeURIComponent(url) + '&title=' + encodeURIComponent(title);
-	}else{
-		url = 'http://pinboard.in/add?url=' + encodeURIComponent(url);
-	}
-	url += '&v=5&noui=1&jump=doclose';
+function bookmarkURL(options){
+	chrome.windows.getCurrent(function(w) {
+	    chrome.tabs.getSelected(w.id,
+	    function (response){
+		
+			if(response.title){
+				url = 'http://pinboard.in/add?url=' + response.url + '&title=' + response.title;
+			}else{
+				url = 'http://pinboard.in/add?url=' + response.url;
+			}
+			url += '&v=5&noui=1&jump=doclose';
 	
-	console.log(options);
-	options = options || {};
-	options.url = url;
-	options.type = 'popup';
-	options.left = options.left || undefined;
-	options.top = options.top || undefined;
-	options.width = options.width || 700;
-	options.height = options.height || 350;
+			console.log(options);
+			options = options || {};
+			options.url = url;
+			options.type = 'popup';
+			options.left = options.left || undefined;
+			options.top = options.top || undefined;
+			options.width = options.width || 700;
+			options.height = options.height || 350;
 	
-	chrome.windows.create(options);
+			chrome.windows.create(options);
+			
+		});
+	});
 }
 function openPopup(options){
 	chrome.windows.getCurrent(function(win){
@@ -224,43 +211,29 @@ function openPopup(options){
 		
 		options.left = options.left ||  win.left + win.width - 350;
 		options.top = options.top || win.top + 50;
-		options.width = options.width || 320;
-		options.height = options.height || 550;
+		options.width = options.width || 300;
+		options.height = options.height || 475;
 		
 		chrome.windows.create(options);
 	});
 }
+function readLater(){
+	chrome.windows.getCurrent(function(w) {
+	    chrome.tabs.getSelected(w.id,
+	    function (response){
+			q=response.url;
+			p=response.title;
+			void(t=open('http://pinboard.in/add?later=yes&noui=yes&jump=close&url='+encodeURIComponent(q)+'&title='+encodeURIComponent(p),'Pinboard','toolbar=no,width=100,height=100'));t.blur();
+	    });
+	});
+}
 
 var delicious;
-var oauthHelper;
 var shortcutPopup = localStorage['shortcutPopup'] ? JSON.parse(localStorage['shortcutPopup']) : {};
 var shortcutBookmark = localStorage['shortcutBookmark'] ? JSON.parse(localStorage['shortcutBookmark']) : {};
+var shortcutReadLater = localStorage['shortcutReadLater'] ? JSON.parse(localStorage['shortcutReadLater']) : {};
 
 document.addEvent('domready', function(){
-	oauthHelper = new OAuthHelper({
-		'consumerKey': 'dj0yJmk9NVB5Z2phM0tVUDIwJmQ9WVdrOVRVOUZOV0o0TkhNbWNHbzlNVEU1TXpFME1qTTBOUS0tJnM9Y29uc3VtZXJzZWNyZXQmeD0yMg--',
-		'consumerSecret': '02df00ce19c9792d7b216e7198adf1437d2da499',
-		'token': localStorage.oauthToken, 
-		'tokenSecret': localStorage.oauthTokenSecret, 
-		'sessionHandle': localStorage.oauthSessionHandle,
-		'urls': {
-			'requestToken': 'https://api.pinboard.in/oauth/v2/get_request_token',
-			'getToken': 'https://api.pinboard.in/oauth/v2/get_token',
-			'callback': 'oob'
-		}
-	});
-	oauthHelper.addEvent('loggedIn', function(){
-		localStorage.oauthToken = oauthHelper.token;
-		localStorage.oauthTokenSecret = oauthHelper.tokenSecret;
-		localStorage.oauthSessionHandle = oauthHelper.sessionHandle;
-		chrome.extension.sendRequest({'type': 'oauthLoginStateChanged'});
-	});
-	oauthHelper.addEvent('loggedOut', function(){
-		localStorage.removeItem('oauthToken');
-		localStorage.removeItem('oauthTokenSecret');
-		localStorage.removeItem('oauthSessionHandle');
-		chrome.extension.sendRequest({'type': 'oauthLoginStateChanged'});
-	});
 	
 	delicious = new Delicious(getUser(), localStorage.autosynch);
 	delicious.posts = JSON.decode(localStorage.posts) || [];
@@ -277,9 +250,6 @@ document.addEvent('domready', function(){
 		}else if(request.type == 'updateoptions'){
 			delicious.cancel();
 			
-			if(localStorage.loginMethod != 'yahoo')
-				oauthHelper.logout();
-			
 			var user = getUser();
 			if(!user.compare(delicious.user)){
 				delicious.user = user;
@@ -292,32 +262,32 @@ document.addEvent('domready', function(){
 			delicious.autosynch = Boolean(parseInt(localStorage.autosynch) || 0);
 			delicious.updateIn(10000); //Update Bookmarks 10 seconds after options changed
 			console.log('options updated');
-		
-		}else if(request.type == 'verify'){
-			console.log('verify', request.data);
-			oauthHelper.verify(request.data);
+		}else if(request.type == 'popup'){
+			openPopup();			
 			
 		}else if(request.type == 'bookmark'){
-			bookmarkURL(request.url, request.title);
+			bookmarkURL();
 			
-		}else if(request.type == 'popup'){
-			openPopup();
+		}else if(request.type == 'readlater'){
+			readLater();
 			
 		}else if(request.type == 'shortcut'){
 			if(compare(shortcutPopup, request.keyCombination)){
 				openPopup({
 					'left': Math.min(window.screen.width - 320, Math.max(0, request.window.x + request.window.width - 370)), 
 					'top': request.window.y + 50, 
-					'width': 320, 
-					'height': 550
+					'width': 300, 
+					'height': 475
 				});
 			}else if(compare(shortcutBookmark, request.keyCombination)){
-				bookmarkURL(request.page.url, request.page.title, {
+				bookmarkURL({
 					'left': Math.round(Math.max(0, Math.min(window.screen.width - 550, request.window.x + request.window.width * .5 - 225))),
 					'top': Math.round(Math.max(0, Math.min(window.screen.height - 550, request.window.y + request.window.height * .5 - 255))),
-					'width': 550,
-					'height': 550
+					'width': 700,
+					'height': 350
 				});
+			}else if(compare(shortcutReadLater, request.keyCombination)){
+				readLater();
 			}
 		
 		}else if(request.type == 'getShortcut'){
@@ -325,7 +295,9 @@ document.addEvent('domready', function(){
 				sendResponse('popup');
 			}else if(compare(shortcutBookmark, request.keyCombination)){
 				sendResponse('bookmark');
+			}else if(compare(shortcutReadLater, request.keyCombination)){
+				sendResponse('readlater');
 			}
-		}
-	});
+		}    
+	});      
 });

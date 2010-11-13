@@ -1,6 +1,5 @@
 document.addEvent('domready', function(){
-	var oauthHelper = chrome.extension.getBackgroundPage().oauthHelper;
-	
+		
 	//init form values
 	$('username').value = localStorage.username || '';
 	$('password').value = localStorage.password || '';
@@ -48,6 +47,7 @@ document.addEvent('domready', function(){
 	
 	var shortcutPopup = new ShortcutButtonLocalStorage('shortcutPopup', 'shortcutPopup').addEvent('changed', update);
 	var shortcutBookmark = new ShortcutButtonLocalStorage('shortcutBookmark', 'shortcutBookmark').addEvent('changed', update);
+	var shortcutReadLater = new ShortcutButtonLocalStorage('shortcutReadLater', 'shortcutReadLater').addEvent('changed', update)
 });
 
 var ShortcutButton = new Class({

@@ -94,16 +94,16 @@ document.addEvent('domready', function(){
 		}
 	});
 	
-	window.addEventListener('blur', close);
+	//window.addEventListener('blur', close);
 	
 	//Shortcuts
 	
 	//close popup when shortcut is activated
-	var keyDownCallback = function(shortcut){
+	/*var keyDownCallback = function(shortcut){
 		if(shortcut == 'popup'){
 			close();
 		}
-	}
+	}*/
 	window.addEventListener('keydown', function(event){
 		var keyCombination = getKeyCombination(event);
 		chrome.extension.sendRequest({
