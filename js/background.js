@@ -50,7 +50,7 @@ var Delicious = new Class({
 		if(this.isWorking || !this.autosynch)
 			return this;
 		
-		console.log('update');
+		//console.log('update');
 		this.cancel();
 		this.isWorking = true;
 		var self = this;
@@ -67,7 +67,7 @@ var Delicious = new Class({
 				if(time > (localStorage['lastUpdate'] || '')){
 					self.load();
 				}else{
-					console.log('no update');
+					//console.log('no update');
 					//self.fireEvent('noupdate');
 					chrome.extension.sendRequest({'type': 'noupdate'});
 					self.onComplete();
@@ -75,7 +75,7 @@ var Delicious = new Class({
 				
 			},
 			onFailure: function(){
-				console.log('posts/update failed');
+				//console.log('posts/update failed');
 				//self.fireEvent('error');
 				chrome.extension.sendRequest({'type': 'error'});
 				self.onComplete();
@@ -88,7 +88,7 @@ var Delicious = new Class({
 	load: function(){
 		this.cancel();
 		
-		console.log('load');
+		//console.log('load');
 		this.isWorking = true;
 		var self = this;
 		
@@ -135,7 +135,7 @@ var Delicious = new Class({
 			},
 			
 			onFailure: function(xhr){
-				console.log('posts/all failed');
+				//console.log('posts/all failed');
 				//self.fireEvent('error');
 				chrome.extension.sendRequest({'type': 'error'});
 				self.onComplete();
@@ -174,7 +174,9 @@ var DeliciousUser = new Class({
 });
 
 function getUser(){
-	return new DeliciousUser(localStorage.username, localStorage.password);
+	var username = localStorage.username;
+	var password = decrypt_password(localStorage.password).replace(encrypt_password(localStorage.username),'');
+	return new DeliciousUser(username, password);
 }
 
 function bookmarkURL(options){
@@ -189,7 +191,7 @@ function bookmarkURL(options){
 			}
 			url += '&v=5&noui=1&jump=doclose';
 	
-			console.log(options);
+			//console.log(options);
 			options = options || {};
 			options.url = url;
 			options.type = 'popup';
@@ -261,7 +263,7 @@ document.addEvent('domready', function(){
 			
 			delicious.autosynch = Boolean(parseInt(localStorage.autosynch) || 0);
 			delicious.updateIn(10000); //Update Bookmarks 10 seconds after options changed
-			console.log('options updated');
+			//console.log('options updated');
 		}else if(request.type == 'popup'){
 			openPopup();			
 			
@@ -301,3 +303,9 @@ document.addEvent('domready', function(){
 		}    
 	});      
 });
+
+if (localStorage['hashed']==false||localStorage['hashed']==null||localStorage['hashed']==undefined||localStorage['hashed']!='true') {
+	localStorage.password = encrypt_password(encrypt_password(localStorage.username)+localStorage.password);
+	localStorage.hashed = true;
+	console.log('hash that shit');
+}

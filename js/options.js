@@ -2,18 +2,19 @@ document.addEvent('domready', function(){
 		
 	//init form values
 	$('username').value = localStorage.username || '';
-	$('password').value = localStorage.password || '';
+	$('password').value = '';
 	$('autosynch').checked = Boolean(parseInt(localStorage.autosynch) || 0);
 	
 	//register events
-	$('username').addEventListener('change', function(){
-		localStorage.username = this.value;
+	$('saveuser').addEventListener('click', function(){
+		localStorage.username = document.getElementById('username').value;
+		localStorage.password = encrypt_password(encrypt_password(document.getElementById('username').value)+document.getElementById('password').value);
+		localStorage.hashed = 'true';		
+		$('password').value = '';
+		$('savemessage').addClass('show');
 		update();
 	});
-	$('password').addEventListener('change', function(){
-		localStorage.password = this.value;
-		update();
-	});
+	
 	$('autosynch').addEventListener('change', function(){
 		localStorage.autosynch = this.checked ? 1 : 0;
 		update();

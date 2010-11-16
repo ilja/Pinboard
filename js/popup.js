@@ -75,7 +75,6 @@ document.addEvent('domready', function(){
 	var keyboardNavigation = new KeyboardListNavigation('posts', {eventSource: 'search'});
 	
 	$('search').addEventListener('keydown', function(event){
-		console.log(event.keyCode == 13);
 		if(event.keyCode == 13 && !keyboardNavigation.currentElement){
 			keyboardNavigation.setElement('tags').first();
 			event.preventDefault();

@@ -31,3 +31,18 @@ function getKeyCombination(event){
 	
 	return keyCombination;
 }
+
+function encrypt_password(plaintext){
+	var key = hexToByteArray('**enter your private hexadecimal key here**');
+	var salt = '**enter your salt here**';
+	var ciphertext = byteArrayToHex(rijndaelEncrypt(plaintext+salt,key,'ECB'));
+	return ciphertext;
+}
+
+function decrypt_password(ciphertext){
+	var key = hexToByteArray('**enter your private hexadecimal key here**');
+	var salt = '**enter your salt here**';
+	var plaintext = byteArrayToString(rijndaelDecrypt(hexToByteArray(ciphertext),key,'ECB'));
+	plaintext = plaintext.replace(salt,'')
+	return plaintext;
+}
