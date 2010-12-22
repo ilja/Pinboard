@@ -1,7 +1,7 @@
 {
 	"name": "Pinboard",
-	"version": "0.2.3.2",
-	"description": "Browse your Pinboard bookmarks. A felicious fork.",
+	"version": "0.2.3.4",
+	"description": "Browse your Pinboard bookmarks.",
 	"background_page": "background.html",
 	"options_page": "options.html",
 	"browser_action": {

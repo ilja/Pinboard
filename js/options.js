@@ -4,6 +4,7 @@ document.addEvent('domready', function(){
 	$('username').value = localStorage.username || '';
 	$('password').value = '';
 	$('autosynch').checked = Boolean(parseInt(localStorage.autosynch) || 0);
+	$('keyboardshort').checked = Boolean(parseInt(localStorage.keyboardshort) || 0);
 	
 	//register events
 	$('saveuser').addEventListener('click', function(){
@@ -35,6 +36,10 @@ document.addEvent('domready', function(){
 		}else if(request.type == 'updated'){
 			$('synchnow').removeClass('working');
 		}
+	});
+	
+	$('keyboardshort').addEventListener('change', function(){
+		localStorage.keyboardshort = this.checked ? 1 : 0;
 	});
 	
 	//helper functions

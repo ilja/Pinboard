@@ -179,55 +179,61 @@ function getUser(){
 	return new DeliciousUser(username, password);
 }
 
-function bookmarkURL(options){
-	chrome.windows.getCurrent(function(w) {
-	    chrome.tabs.getSelected(w.id,
-	    function (response){
+function bookmarkURL(options,force){
+	if (localStorage.keyboardshort == 1 || force == 1) {
+		chrome.windows.getCurrent(function(w) {
+		    chrome.tabs.getSelected(w.id,
+		    function (response){
 		
-			if(response.title){
-				url = 'http://pinboard.in/add?url=' + response.url + '&title=' + response.title;
-			}else{
-				url = 'http://pinboard.in/add?url=' + response.url;
-			}
-			url += '&v=5&noui=1&jump=doclose';
+				if(response.title){
+					url = 'http://pinboard.in/add?url=' + response.url + '&title=' + response.title;
+				}else{
+					url = 'http://pinboard.in/add?url=' + response.url;
+				}
+				url += '&v=5&noui=1&jump=doclose';
 	
-			//console.log(options);
-			options = options || {};
-			options.url = url;
-			options.type = 'popup';
-			options.left = options.left || undefined;
-			options.top = options.top || undefined;
-			options.width = options.width || 700;
-			options.height = options.height || 350;
+				//console.log(options);
+				options = options || {};
+				options.url = url;
+				options.type = 'popup';
+				options.left = options.left || undefined;
+				options.top = options.top || undefined;
+				options.width = options.width || 700;
+				options.height = options.height || 350;
 	
-			chrome.windows.create(options);
+				chrome.windows.create(options);
 			
+			});
 		});
-	});
+	}
 }
 function openPopup(options){
-	chrome.windows.getCurrent(function(win){
-		options = options || {};
-		options.url = chrome.extension.getURL('popup.html#popup');
-		options.type = 'popup';
+	if (localStorage.keyboardshort == 1) {
+		chrome.windows.getCurrent(function(win){
+			options = options || {};
+			options.url = chrome.extension.getURL('popup.html#popup');
+			options.type = 'popup';
 		
-		options.left = options.left ||  win.left + win.width - 350;
-		options.top = options.top || win.top + 50;
-		options.width = options.width || 300;
-		options.height = options.height || 475;
+			options.left = options.left ||  win.left + win.width - 350;
+			options.top = options.top || win.top + 50;
+			options.width = options.width || 300;
+			options.height = options.height || 475;
 		
-		chrome.windows.create(options);
-	});
+			chrome.windows.create(options);
+		});
+	}
 }
 function readLater(){
-	chrome.windows.getCurrent(function(w) {
-	    chrome.tabs.getSelected(w.id,
-	    function (response){
-			q=response.url;
-			p=response.title;
-			void(t=open('http://pinboard.in/add?later=yes&noui=yes&jump=close&url='+encodeURIComponent(q)+'&title='+encodeURIComponent(p),'Pinboard','toolbar=no,width=100,height=100'));t.blur();
-	    });
-	});
+	if (localStorage.keyboardshort == 1) {
+		chrome.windows.getCurrent(function(w) {
+		    chrome.tabs.getSelected(w.id,
+		    function (response){
+				q=response.url;
+				p=response.title;
+				void(t=open('http://pinboard.in/add?later=yes&noui=yes&jump=close&url='+encodeURIComponent(q)+'&title='+encodeURIComponent(p),'Pinboard','toolbar=no,width=100,height=100'));t.blur();
+		    });
+		});
+	}
 }
 
 var delicious;
@@ -266,9 +272,8 @@ document.addEvent('domready', function(){
 			//console.log('options updated');
 		}else if(request.type == 'popup'){
 			openPopup();			
-			
 		}else if(request.type == 'bookmark'){
-			bookmarkURL();
+			bookmarkURL({},1);
 			
 		}else if(request.type == 'readlater'){
 			readLater();
@@ -307,5 +312,7 @@ document.addEvent('domready', function(){
 if (localStorage['hashed']==false||localStorage['hashed']==null||localStorage['hashed']==undefined||localStorage['hashed']!='true') {
 	localStorage.password = encrypt_password(encrypt_password(localStorage.username)+localStorage.password);
 	localStorage.hashed = true;
-	console.log('hash that shit');
+}
+if (localStorage['keyboardshort']!=0&&localStorage['keyboardshort']!=1) {
+	localStorage.keyboardshort = 1;
 }

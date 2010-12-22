@@ -119,6 +119,21 @@ a.error + #syncherror{
 	height: 20px;
 	opacity: 1;
 }
+#savemessage {
+	-webkit-transition: opacity .5s ease-in-out, height 0s linear .5s;
+	opacity: 0;
+	height: 0;
+	overflow: hidden;
+	color: blue;
+	padding: 0 0 0 8px;
+	margin: 0;
+	display: inline;
+}
+#savemessage.show{
+	-webkit-transition: opacity .5s ease-in-out, height 0s;
+	height: 20px;
+	opacity: 1;
+}
 
 /*__Shortcuts__*/
 input.shortcut{
@@ -150,6 +165,6 @@ div.notes{
 #delicious_form input {
 	margin: 5px 0 12px 0;
 }
-#autosynch {
+#autosynch, #keyboardshort {
 	margin: 4px 8px 4px 0;
 }
