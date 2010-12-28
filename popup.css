@@ -11,7 +11,7 @@ body{
 	font-size: 14px;
 	overflow: hidden;
 	width: 300px;
-	height: 1px;
+	min-height: 1px;
 }
 
 .topbar{
@@ -428,4 +428,8 @@ ul.posts {
 	display: block;
 	clear: both;
 	height: 3px;
+}
+.break {
+	display:block;
+	clear: both;
 }

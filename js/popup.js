@@ -1,4 +1,4 @@
-﻿var version = '0.2.2';
+﻿var version = '0.2.3.6';
 var selectedTags = [];
 var delicious = chrome.extension.getBackgroundPage().delicious;
 var notifications;
@@ -115,7 +115,7 @@ document.addEvent('domready', function(){
 	
 	//dont't show version update notification on install
 	if(localStorage['version'] && localStorage['version'] < version){
-		notifications.add('felicious has been updated (<a href="javascript:chrome.tabs.create({url: \'options.html\'});">changelog</a>)');
+		notifications.add('Pinboard has been updated (<a href="javascript:chrome.tabs.create({url: \'options.html\'});">changelog</a>)');
 	}
 	localStorage['version'] = version;
 	

@@ -1,11 +1,12 @@
 {
 	"name": "Pinboard",
-	"version": "0.2.3.5",
+	"version": "0.2.3.6",
 	"description": "Browse your Pinboard bookmarks.",
 	"background_page": "background.html",
 	"options_page": "options.html",
 	"browser_action": {
 		"default_icon": "images/icon_19.png",
+		"default_title": "Pinboard",
 		"popup": "popup.html"
 	},
 	"icons": {
@@ -28,7 +29,7 @@
 	],
 	"permissions": [
 		"http://api.pinboard.in/*", 
-		"https://api.pinboard.in/*", 
+		"https://api.pinboard.in/*",
 		"tabs"
 	]
 }

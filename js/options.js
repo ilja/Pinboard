@@ -14,6 +14,7 @@ document.addEvent('domready', function(){
 		$('password').value = '';
 		$('savemessage').addClass('show');
 		update();
+		sync();
 	});
 	
 	$('autosynch').addEventListener('change', function(){
@@ -22,9 +23,7 @@ document.addEvent('domready', function(){
 	});
 	
 	$('synchnow').addEventListener('click', function(){
-		chrome.extension.sendRequest({'type': 'reload'});
-		$('synchnow').addClass('working');
-		$('synchnow').removeClass('error');
+		sync();
 	});
 	
 	chrome.extension.onRequest.addListener(function(request){
@@ -49,6 +48,11 @@ document.addEvent('domready', function(){
 
 	function update(){
 		chrome.extension.sendRequest({'type': 'updateoptions'});
+	}
+	function sync(){
+		chrome.extension.sendRequest({'type': 'reload'});
+		$('synchnow').addClass('working');
+		$('synchnow').removeClass('error');
 	}
 	
 	var shortcutPopup = new ShortcutButtonLocalStorage('shortcutPopup', 'shortcutPopup').addEvent('changed', update);

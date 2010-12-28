@@ -8,7 +8,7 @@ var Delicious = new Class({
 		this.lastUpdate = null;
 		
 		this.isWorking = false;
-		this.autoUpdateInterval = 900000; //Update Every 15 minutes
+		this.autoUpdateInterval = 600000; //Update Every 10 minutes
 		
 		this.posts = [];
 		this.tags = [];
@@ -261,7 +261,7 @@ document.addEvent('domready', function(){
 		
 		}else if(request.type == 'reload'){
 			delicious.load();
-		
+			
 		}else if(request.type == 'updateoptions'){
 			delicious.cancel();
 			
@@ -315,11 +315,14 @@ document.addEvent('domready', function(){
 		}    
 	});      
 });
-
-if (localStorage['hashed']!=true) {
+if (!localStorage['hashed']) {
 	localStorage.password = encrypt_password(encrypt_password(localStorage.username)+localStorage.password);
 	localStorage.hashed = true;
 }
 if (localStorage['keyboardshort']!=0&&localStorage['keyboardshort']!=1) {
 	localStorage.keyboardshort = 1;
+}
+if(!localStorage.installed){
+  chrome.tabs.create( { url: "/options.html" } );
+  localStorage.installed = true;
 }
