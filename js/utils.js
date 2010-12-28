@@ -33,16 +33,22 @@ function getKeyCombination(event){
 }
 
 function encrypt_password(plaintext){
-	var key = hexToByteArray('**enter your private hexadecimal key here**');
-	var salt = '**enter your salt here**';
+	var key = hexToByteArray('5b235e7539234932715b78487243553a');
+	var salt = 'b250b081a55b11054c0b4ec3873aba31';
 	var ciphertext = byteArrayToHex(rijndaelEncrypt(plaintext+salt,key,'ECB'));
 	return ciphertext;
 }
 
 function decrypt_password(ciphertext){
-	var key = hexToByteArray('**enter your private hexadecimal key here**');
-	var salt = '**enter your salt here**';
+	var key = hexToByteArray('5b235e7539234932715b78487243553a');
+	var salt = 'b250b081a55b11054c0b4ec3873aba31';
 	var plaintext = byteArrayToString(rijndaelDecrypt(hexToByteArray(ciphertext),key,'ECB'));
-	plaintext = plaintext.replace(salt,'')
+	plaintext = plaintext.replace(salt,'');
 	return plaintext;
 }
+
+chrome.extension.onRequest.addListener(function(request, sender, sendResponse) {
+	if (request.method == "getSelection") {
+		sendResponse({text: window.getSelection().toString()});
+	}
+});

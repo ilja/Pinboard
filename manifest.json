@@ -1,6 +1,6 @@
 {
 	"name": "Pinboard",
-	"version": "0.2.3.4",
+	"version": "0.2.3.5",
 	"description": "Browse your Pinboard bookmarks.",
 	"background_page": "background.html",
 	"options_page": "options.html",

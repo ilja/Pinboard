@@ -182,31 +182,38 @@ function getUser(){
 function bookmarkURL(options,force){
 	if (localStorage.keyboardshort == 1 || force == 1) {
 		chrome.windows.getCurrent(function(w) {
-		    chrome.tabs.getSelected(w.id,
-		    function (response){
-		
-				if(response.title){
-					url = 'http://pinboard.in/add?url=' + response.url + '&title=' + response.title;
-				}else{
-					url = 'http://pinboard.in/add?url=' + response.url;
+			chrome.tabs.getSelected(w.id, function(tab) {
+
+				var url = 'http://pinboard.in/add?url=' + encodeURIComponent(tab.url);
+
+				if (tab.title){
+					url += '&title=' + encodeURIComponent(tab.title);
 				}
-				url += '&v=5&noui=1&jump=doclose';
-	
-				//console.log(options);
-				options = options || {};
-				options.url = url;
-				options.type = 'popup';
-				options.left = options.left || undefined;
-				options.top = options.top || undefined;
-				options.width = options.width || 700;
-				options.height = options.height || 350;
-	
-				chrome.windows.create(options);
-			
+
+				chrome.tabs.sendRequest(tab.id, {method: 'getSelection'}, function(response) {
+					if (typeof url == 'undefined') url = '';
+
+					if (response.text !== '') {
+						url += '&description=' + encodeURIComponent(response.text);
+					}
+					url += '&v=5&noui=1&jump=doclose';
+
+					// console.log(options);
+					options        = options || {};
+					options.url    = url;
+					options.type   = 'popup';
+					options.left   = options.left || undefined;
+					options.top    = options.top || undefined;
+					options.width  = options.width || 700;
+					options.height = options.height || 350;
+
+					chrome.windows.create(options);
+				});
 			});
 		});
 	}
 }
+
 function openPopup(options){
 	if (localStorage.keyboardshort == 1) {
 		chrome.windows.getCurrent(function(win){
@@ -309,7 +316,7 @@ document.addEvent('domready', function(){
 	});      
 });
 
-if (localStorage['hashed']==false||localStorage['hashed']==null||localStorage['hashed']==undefined||localStorage['hashed']!='true') {
+if (localStorage['hashed']!=true) {
 	localStorage.password = encrypt_password(encrypt_password(localStorage.username)+localStorage.password);
 	localStorage.hashed = true;
 }
