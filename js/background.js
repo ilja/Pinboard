@@ -8,7 +8,7 @@ var Delicious = new Class({
 		this.lastUpdate = null;
 		
 		this.isWorking = false;
-		this.autoUpdateInterval = 600000; //Update Every 10 minutes
+		this.autoUpdateInterval = 900000; //Update Every 15 minutes
 		
 		this.posts = [];
 		this.tags = [];
@@ -59,10 +59,15 @@ var Delicious = new Class({
 			method: 'get',
 			url: this.getURL('posts/update'),
 			onSuccess: function(responseText, responseXML){
-				if (responseXML.getElementsByTagName('update')[0].getAttribute('time')) {
-					var time = responseXML.getElementsByTagName('update')[0].getAttribute('time');
-				} else {
-					var time = null;
+				var time = null;
+				if (responseXML && responseXML.getElementsByTagName('update')[0].getAttribute('time')) {
+					time = responseXML.getElementsByTagName('update')[0].getAttribute('time');
+				} else if (responseText) {
+					// try to extract it from the response text...
+					var result = responseText.match(/update time="([^"]+)"/);
+					if (result.length > 1) {
+						time = result[1];
+					}
 				}
 				if(time > (localStorage['lastUpdate'] || '')){
 					self.load();
@@ -115,11 +120,13 @@ var Delicious = new Class({
 					});
 					
 					postTags.each(function(item){
-						tagIndex[item] = (tagIndex[item] || 0) + 1;
+						if (item != "") {
+							tagIndex[item] = (tagIndex[item] || 0) + 1;
+						}
 					});
 				}
 				
-				$each(tagIndex, function(item, key){
+				Hash.each(tagIndex, function(item, key){
 					tags.push({name: key, count: item});
 				});
 				
@@ -161,7 +168,7 @@ var DeliciousUser = new Class({
 	},
 	
 	getURL: function(url, parameters){
-		return 'https://' + this.username + ':' + this.password + '@api.pinboard.in/v1/' + url;
+		return 'https://' + encodeURIComponent(this.username) + ':' + encodeURIComponent(this.password) + '@api.pinboard.in/v1/' + url;
 	},
 	
 	isLoggedIn: function(){
